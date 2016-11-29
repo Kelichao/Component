@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- 页面编码格式 -->
+	<meta charset="UTF-8">
+	<!-- 移动端viewPort -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+	<!-- 删除苹果默认的工具栏和菜单栏 -->
+	<meta name="apple-mobile-web-app-capable" content="yes" >
+	<!-- 设置苹果工具栏颜色 -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" >
+	<!-- 忽略将数字变为电话号码,邮箱地址-->
+	<meta name="format-detection" content="telephone=no,email=no" >
+
+
+	<title>移动Dialog</title>
+	<style type="text/css">
+	*{
+		margin:0;
+		padding:0;
+		outline: none;
+	}
+	body{
+		font-size:12px;padding:20px;
+	}
+	button{display: block;background:green;padding:10px;margin:20px 0;border-radius:10px;color:white;border:none;}
+	</style>
+	<link rel="stylesheet" type="text/css" href="./css/dialog.css">
+</head>
+<body>
+<div class="g-dialog-contianer">
+	<div class="dialog-window">
+		<div class="dialog-header loading"></div>
+		<div class="dialog-content">你是否要清空购物车</div>
+		<div class="dialog-footer">
+			<button>按钮1</button>
+			<button class="red">按钮2</button>
+			<button class="green">按钮3</button>
+		</div>
+	</div>
+</div>
+
+
+<!-- 
+	<button id = "bt1">没有传递任何参数，需要手动关闭</button>
+	<button id = "bt2">弹出没有任何按钮的警告框，且2秒后自动关闭</button>
+	<button id = "bt3">弹出一个有确认和取消按钮的成功框，点击按钮直接关闭</button>
+	<button id = "bt4">弹出一个有确认按钮的警告框，点击按钮不关闭（需手动关闭）</button>
+	<button id = "bt5">弹出一个多组合的按钮框，切按钮样式可定制</button>
+	<button id = "bt6">弹出一个确认和删除的框，点击确认弹出加载框2秒自动关闭，点击删除按钮把上一次框关闭</button> -->
+</body>
+</html>
+<script type="text/javascript" src="./js/zepto.js"></script>
