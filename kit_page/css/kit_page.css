@@ -1,0 +1,44 @@
+.kit_page_item {
+	min-width: 1.5em;
+	height: 2em;
+	padding:0 0.5em 0 0.5em;
+	font-size:14px;
+	border: 1px solid #e1e2e3;
+	cursor: pointer;
+	display: inline-block;
+	text-align:center;
+	line-height:2em;
+	vertical-align:middle;
+}
+.kit_page_prev, .kit_page_next { 
+	width:auto;
+	padding:0 10px 0 10px;
+}
+.kit_page_item:hover{
+	background: #f2f8ff;
+	border: 1px solid #38f;
+}
+.kit_page_input{
+	height: 24px;
+	width: 40px;
+	text-align:center;
+}
+.page_sure{
+	display: inline-block;
+	border: 1px solid #e1e2e3;
+	padding:0 10px 0 10px;
+	height: 2em;
+	line-height: 2em;
+	cursor:pointer;
+	font-size:14px;
+}
+.page_sure:hover{
+	background: #f2f8ff;
+	border: 1px solid #38f;
+}
+.kit_page_item.kit_page_on {
+	color:#000000;
+	border:none;
+	cursor:default;
+	background:none;
+}
