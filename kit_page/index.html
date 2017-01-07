@@ -24,12 +24,60 @@
 	</div>
 </body>
 <script type="text/javascript">
+
 	;(function(undefined) {
 
 		function KitPage(param) {
-			this.total = param.;
+			this.total = param.total;
+			this.join();
 		}
 		
+		KitPage.prototype = {
+			constroctor: KitPage,
+			pageTemp: function(position) {
+				var temp = {
+					prev: '<span class="kit_page_item kit_page_prev">上一页</span>\r\n',
+					next: '<span class="kit_page_item kit_page_next">下一页</span>\r\n\
+							<input type="text" class="kit_page_input">\r\n\
+							<span class="page_sure">确定</span>',
+					content: '<span class="kit_page_item">' + position + '</span>\r\n'
+				}
+
+				switch (position) {
+					case "prev":
+						return temp.prev;
+						break;
+					case "next":
+						return temp.next;
+						break;
+					default :
+						return temp.content;
+				}
+			},
+			join: function() {
+				var template = "";
+
+				// 添加前一页
+				template = this.pageTemp("prev");
+
+				// 添加主体页码
+				template += this.pageTemp(1) + this.pageTemp(2) ;
+
+				// 添加后一页及跨度跳转代码
+				template += this.pageTemp("next");
+
+				this.total.innerHTML = template;
+			},
+
+		}
+		
+
+
+		window.KitPage = KitPage;
 	})();
+
+	new KitPage({
+		total: document.getElementById("aaa"),
+	})
 </script>
 </html>
