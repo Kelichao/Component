@@ -4,7 +4,7 @@
 	<title>分页插件</title>
 	<meta charset="utf-8">
 	<!-- <link rel="stylesheet" type="text/css" href="./css/reset.css"> -->
-	<link rel="stylesheet" type="text/css" href="./css/kit_page.css">
+	<link rel="stylesheet" type="text/css" href="./css/kitPage.css">
 </head>
 <style type="text/css">
 
@@ -40,7 +40,8 @@
 					next: '<span class="kit_page_item kit_page_next">下一页</span>\r\n\
 							<input type="text" class="kit_page_input">\r\n\
 							<span class="page_sure">确定</span>',
-					content: '<span class="kit_page_item">' + position + '</span>\r\n'
+					content: '<span class="kit_page_item">' + position + '</span>\r\n',
+					symbol: '<span class="kit_page_symbol">...</span>'
 				}
 
 				switch (position) {
@@ -49,6 +50,9 @@
 						break;
 					case "next":
 						return temp.next;
+						break;
+					case "symbol":
+						return temp.symbol;
 						break;
 					default :
 						return temp.content;
@@ -61,17 +65,34 @@
 				template = this.pageTemp("prev");
 
 				// 添加主体页码
-				template += this.pageTemp(1) + this.pageTemp(2) ;
+				template += this.pageTemp(1) + this.pageTemp("symbol") + this.pageTemp(2);
 
 				// 添加后一页及跨度跳转代码
 				template += this.pageTemp("next");
 
 				this.total.innerHTML = template;
 			},
-
+			// 页码处理函数
+			processPage: function(number) {
+				
+			}
 		}
 		
+		// 兼容 AMD 规范
+		if (typeof define === 'function' && define.amd) {
 
+			// 要求是define包裹，然后返回整个key对象即可
+		    define('kitPage', [], function() {
+		        return kitPage;
+		    });
+		}
+
+		// 兼容CMD规范
+		if(typeof define === "function" && define.cmd) {
+		  define(function() {
+		    return kitPage;
+		  })
+		}
 
 		window.KitPage = KitPage;
 	})();
