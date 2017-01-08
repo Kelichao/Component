@@ -4,7 +4,7 @@
 	<title>分页插件</title>
 	<meta charset="utf-8">
 	<!-- <link rel="stylesheet" type="text/css" href="./css/reset.css"> -->
-	<link rel="stylesheet" type="text/css" href="./css/kitPage.css">
+	<link rel="stylesheet" type="text/css" href="./css/kit_page.css">
 </head>
 <style type="text/css">
 
@@ -30,33 +30,46 @@
 		function KitPage(param) {
 			this.total = document.getElementById(param.totalId);
 			this.join();
+			// 触发事件
+			this.event();
 		}
 		
+		KitPage.DEFAULT = {
+			itemNumber: 8,// 显示几个页码项
+			page: 1,
+			total: 200,// 总共的页数
+			callback: function(page) {
+				new KitPage({
+					totalId: "aaa",
+					page:page
+				})
+			}
+		}
+
 		KitPage.prototype = {
 			constroctor: KitPage,
-			pageTemp: function(position) {
+			pageTemp: function(type, index) {
 				var temp = {
 					prev: '<span class="kit_page_item kit_page_prev">上一页</span>\r\n',
 					next: '<span class="kit_page_item kit_page_next">下一页</span>\r\n\
 							<input type="text" class="kit_page_input">\r\n\
+							<span>共' + KitPage.DEFAULT.total + '页</span>\r\n\
 							<span class="page_sure">确定</span>',
-					content: '<span class="kit_page_item">' + position + '</span>\r\n',
-					symbol: '<span class="kit_page_symbol">...</span>'
+					content: '<span class="kit_page_item kit_page_click">' + index + '</span>\r\n',
+					onContent: '<span class="kit_page_item kit_page_on">' + index + '</span>\r\n'
+					// symbol: '<span class="kit_page_symbol">...</span>'
 				}
 
-				switch (position) {
-					case "prev":
-						return temp.prev;
-						break;
-					case "next":
-						return temp.next;
-						break;
-					case "symbol":
-						return temp.symbol;
-						break;
-					default :
-						return temp.content;
+				return temp[type];
+			},
+			event: function() {
+				var dom = this.total.getElementsByClassName("kit_page_click");
+				for (var i = 0; i < dom.length; i++) {
+					dom[i].onclick = function() {
+						KitPage.DEFAULT.callback(this.innerText);
+					}
 				}
+				
 			},
 			join: function() {
 				var template = "";
@@ -65,16 +78,54 @@
 				template = this.pageTemp("prev");
 
 				// 添加主体页码
-				template += this.pageTemp(1) + this.pageTemp("symbol") + this.pageTemp(2);
+				template += this.processPage(10, 100, KitPage.DEFAULT.itemNumber);
 
 				// 添加后一页及跨度跳转代码
-				template += this.pageTemp("next");
+				template += this.pageTemp("next", KitPage.DEFAULT.total);
 
 				this.total.innerHTML = template;
 			},
 			// 页码处理函数
-			processPage: function(number) {
+			processPage: function(now, number, itemNumber) {
 
+				// 防止输入的是字符串形式的数字
+				now = new Number(now);
+				number = new Number(number);
+				itemNumber = new Number(itemNumber);
+
+				var final = "";
+				var arr = [];
+				// 如果是奇数，则是一半多1，偶数则为真正的一半，已经减去now项
+				var half = Math.floor(itemNumber/2) + (itemNumber%2) - 1;
+				// 开始项的下标
+				var start = now - half;
+
+				// 如果前面的页码不会小于0
+				if (start > 0) {
+					// 把now包含进去了
+					for (var i = start; i <= now; i++) {
+						arr.push(i);
+					}
+				} else {
+					for (var i = 1; i <= now; i++) {
+						arr.push(i);
+					}
+				}
+				// 补全长度
+				while (arr.length < itemNumber && ((now + 1) < number)) {
+					arr.push(++now);
+				}
+
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i] === now) {
+						final += this.pageTemp("onContent", arr[i]);
+					} else {
+						final += this.pageTemp("content", arr[i]);
+					}
+					
+				}
+
+				return final;
 			}
 		}
 		
