@@ -28,23 +28,32 @@
 	;(function(undefined) {
 
 		function KitPage(param) {
+			// 默认参数
+			this.DEFAULT = {
+				itemNumber: param.itemNumber || 8,// 显示几个页码项
+				page: param.page || 1,
+				total: param.total || 10,// 总共的页数
+				callback: param.callback || new Function()
+			};
+
 			this.total = document.getElementById(param.totalId);
 			this.join();
 			// 触发事件
 			this.event();
 		}
 		
-		KitPage.DEFAULT = {
-			itemNumber: 8,// 显示几个页码项
-			page: 1,
-			total: 200,// 总共的页数
-			callback: function(page) {
-				new KitPage({
-					totalId: "aaa",
-					page:page
-				})
-			}
-		}
+		// KitPage.DEFAULT = {
+		// 	itemNumber: 8,// 显示几个页码项
+		// 	page: 1,
+		// 	total: 200,// 总共的页数
+		// 	callback: function(page) {
+		// 		console.log(page);
+		// 		// new KitPage({
+		// 		// 	totalId: "aaa",
+		// 		// 	page:page
+		// 		// })
+		// 	}
+		// }
 
 		KitPage.prototype = {
 			constroctor: KitPage,
@@ -53,7 +62,7 @@
 					prev: '<span class="kit_page_item kit_page_prev">上一页</span>\r\n',
 					next: '<span class="kit_page_item kit_page_next">下一页</span>\r\n\
 							<input type="text" class="kit_page_input">\r\n\
-							<span>共' + KitPage.DEFAULT.total + '页</span>\r\n\
+							<span>共' + this.DEFAULT.total + '页</span>\r\n\
 							<span class="page_sure">确定</span>',
 					content: '<span class="kit_page_item kit_page_click">' + index + '</span>\r\n',
 					onContent: '<span class="kit_page_item kit_page_on">' + index + '</span>\r\n'
@@ -63,10 +72,11 @@
 				return temp[type];
 			},
 			event: function() {
+				var _this = this;
 				var dom = this.total.getElementsByClassName("kit_page_click");
 				for (var i = 0; i < dom.length; i++) {
 					dom[i].onclick = function() {
-						KitPage.DEFAULT.callback(this.innerText);
+						_this.DEFAULT.callback(this.innerText);
 					}
 				}
 				
@@ -78,10 +88,10 @@
 				template = this.pageTemp("prev");
 
 				// 添加主体页码
-				template += this.processPage(10, 100, KitPage.DEFAULT.itemNumber);
+				template += this.processPage(this.DEFAULT.page, this.DEFAULT.total, this.DEFAULT.itemNumber);
 
 				// 添加后一页及跨度跳转代码
-				template += this.pageTemp("next", KitPage.DEFAULT.total);
+				template += this.pageTemp("next", this.DEFAULT.total);
 
 				this.total.innerHTML = template;
 			},
@@ -150,6 +160,17 @@
 
 	new KitPage({
 		totalId: "aaa",
+		total:20,
+		page:2,
+		callback: function(page) {
+			new KitPage({
+				totalId: "aaa",
+				page:10,
+				callback: function(page) {
+					console.log(page);
+				}
+			})
+		}
 	})
 </script>
 </html>
