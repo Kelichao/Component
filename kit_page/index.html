@@ -32,7 +32,7 @@
 			this.DEFAULT = {
 				itemNumber: param.itemNumber || 8,// 显示几个页码项
 				page: param.page || 1,
-				total: param.total || 10,// 总共的页数
+				fullPage: param.fullPage || 10,// 总共的页数
 				callback: param.callback || new Function()
 			};
 
@@ -62,7 +62,7 @@
 					prev: '<span class="kit_page_item kit_page_prev">上一页</span>\r\n',
 					next: '<span class="kit_page_item kit_page_next">下一页</span>\r\n\
 							<input type="text" class="kit_page_input">\r\n\
-							<span>共' + this.DEFAULT.total + '页</span>\r\n\
+							<span>共' + this.DEFAULT.fullPage + '页</span>\r\n\
 							<span class="page_sure">确定</span>',
 					content: '<span class="kit_page_item kit_page_click">' + index + '</span>\r\n',
 					onContent: '<span class="kit_page_item kit_page_on">' + index + '</span>\r\n'
@@ -72,14 +72,48 @@
 				return temp[type];
 			},
 			event: function() {
-				var _this = this;
-				var dom = this.total.getElementsByClassName("kit_page_click");
-				for (var i = 0; i < dom.length; i++) {
-					dom[i].onclick = function() {
-						_this.DEFAULT.callback(this.innerText);
+				var _this = this,
+					callback = _this.DEFAULT.callback,
+					page = this.total.getElementsByClassName("kit_page_click"),
+					prev = this.total.getElementsByClassName("kit_page_prev")[0],
+					next = this.total.getElementsByClassName("kit_page_next")[0],
+					sure = this.total.getElementsByClassName("page_sure")[0],
+					input = this.total.getElementsByClassName("kit_page_input")[0];
+
+				// 单体页码的事件
+				for (var i = 0; i < page.length; i++) {
+					page[i].onclick = function() {
+						callback(this.innerText);
 					}
 				}
-				
+				// 前一页事件
+				prev.onclick = function() {
+					callback(_this.DEFAULT.page - 1);
+				};
+				//后一页事件
+				next.onclick = function() {
+					callback(_this.DEFAULT.page + 1);
+				};
+				// 确定按钮事件
+				sure.onclick = function() {
+					var val = input.value;
+					if (typeof Number(val) === "number" && val < _this.DEFAULT.fullPage) {
+						callback(val);
+					} else {
+						console.warn("输入的页码不符合要求");
+					}
+				};
+				// 输入框回车事件
+				input.onkeydown = function(e) {
+					if (e.keyCode === 13) {
+						var val = input.value;
+						if (typeof Number(val) === "number" && val < _this.DEFAULT.fullPage) {
+							callback(val);
+						} else {
+							console.warn("输入的页码不符合要求");
+						}
+					}
+				};
 			},
 			join: function() {
 				var template = "";
@@ -88,10 +122,10 @@
 				template = this.pageTemp("prev");
 
 				// 添加主体页码
-				template += this.processPage(this.DEFAULT.page, this.DEFAULT.total, this.DEFAULT.itemNumber);
+				template += this.processPage(this.DEFAULT.page, this.DEFAULT.fullPage, this.DEFAULT.itemNumber);
 
 				// 添加后一页及跨度跳转代码
-				template += this.pageTemp("next", this.DEFAULT.total);
+				template += this.pageTemp("next", this.DEFAULT.fullPage);
 
 				this.total.innerHTML = template;
 			},
@@ -99,7 +133,7 @@
 			processPage: function(now, number, itemNumber) {
 
 				// 防止输入的是字符串形式的数字
-				now = new Number(now);
+				var saveNow = now = Number(now);
 				number = new Number(number);
 				itemNumber = new Number(itemNumber);
 
@@ -127,7 +161,7 @@
 				}
 
 				for (var i = 0; i < arr.length; i++) {
-					if (arr[i] === now) {
+					if (arr[i] === saveNow) {
 						final += this.pageTemp("onContent", arr[i]);
 					} else {
 						final += this.pageTemp("content", arr[i]);
@@ -159,17 +193,12 @@
 	})();
 
 	new KitPage({
-		totalId: "aaa",
-		total:20,
-		page:2,
-		callback: function(page) {
-			new KitPage({
-				totalId: "aaa",
-				page:10,
-				callback: function(page) {
-					console.log(page);
-				}
-			})
+		totalId: "aaa",// 容器id
+		fullPage:100,// 全部的页码数
+		itemNumber:8,// 显示多少个页码
+		page:50,// 当前处于多少页
+		callback: function(page) {// 回调函数
+			console.log(page);
 		}
 	})
 </script>
