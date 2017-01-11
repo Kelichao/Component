@@ -1,3 +1,9 @@
+/*!
+ * @description: tab切换组件
+ * @author: kelichao
+ * @update: 2017-01-11 
+ * @https://github.com/Kelichao
+ */
 ;(function() {
 	function KitTab(option) {
 		
@@ -76,7 +82,9 @@
 			this.changeContClass(totalCont);
 
 			// 触发回调
-			this.option.callback(this.dataTab);
+			if (this.option.callback) {
+				this.option.callback(this.dataTab);
+			}
 		}
 	};
 
