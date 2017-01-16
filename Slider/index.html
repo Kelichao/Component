@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>可拖拽物体</title>
+	<meta charset="utf-8">
+</head>
+<body >
+<div class="cont" style="background:gray;height:100px;width:100px;position:absolute;">
+	
+</div>
+<div class="container" style="width:500px;height:100px;position:relative;
+border:1px solid black;top:200px;left:100px;">
+	<div class="cont2" style="background:orange;height:100px;
+	width:100px;position:absolute;z-index: 100;">
+		
+	</div>
+</div>
+
+</body>
+<script type="text/javascript">
+function aaa(obj,container) {
+	// 用于保存鼠标位置与容器左上角的位置差
+	var mouseToDomOffsetX = 0;
+
+	// 可移动标志位
+	var isDraging = false;
+
+	var dragCont = document.querySelector(obj);
+
+	//  滑块移动百分比
+	var percent = 0;
+
+	// 按下事件
+	dragCont.addEventListener("mousedown", function(e) {
+
+		// 保存鼠标位置与容器左上角的位置差,然后位置跟着鼠标走就可以了
+		mouseToDomOffsetX = e.pageX - dragCont.offsetLeft;
+
+		// 设置是否可移动的标志位
+		isDraging = true;
+	});
+	// 移动
+	document.addEventListener("mousemove", function(e) {
+		if (isDraging === true) {
+			// 计算当前位置
+			var realDomOffset = e.pageX - mouseToDomOffsetX;
+
+			// 范围限定防止拖拽出浏览器边界
+			var clientRange = container.clientWidth;
+
+
+			var contWidth = dragCont.offsetWidth;
+
+			var maxX = clientRange - contWidth;
+			
+			// 限定移动范围
+			realDomOffset = Math.min(maxX, Math.max(0, realDomOffset));
+			dragCont.style.left =  realDomOffset + "px";
+
+			// 计算移动的百分比
+			percent = realDomOffset/(clientRange - dragCont.offsetWidth);
+			
+			
+		}
+	});
+	
+	// 弹起
+	document.addEventListener("mouseup", function() {
+		isDraging = false;
+		// 输出百分比
+		console.log(percent);
+	});
+}
+
+aaa(".cont", document.body)
+aaa(".cont2", document.querySelector(".container"))
+</script>
+</html>
