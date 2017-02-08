@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>通过截屏在网页中实现黏贴上传功能</title>
+    <meta charset="utf-8">
+</head>
+<body>
+<h1>请在输入框中黏贴</h1>
+<input id="img_input" type= "text" placeholder="请在输入框中黏贴" ><br>
+</body>
+<script type="text/javascript" src="./js/paste-img.js"></script>
+<script type="text/javascript">
+
+;(function(undefined) {
+
+    // flag是否进行base64编码
+    function PasteImg(flag, id, fn) {
+        this.input = document.querySelector("#img_input");
+        this.fn = fn;
+        this.event(flag);
+    }
+
+    PasteImg.prototype = {
+        constrctor: PasteImg,
+        // 文件处理函数
+        _fileProcess: function(data, flag) {
+            var reader = new FileReader();
+            var _this = this;
+
+            if (flag === true) {
+                // filderReader成功读取数据
+                reader.onload = function(e){
+                    var baseCode = e.target.result;
+                    // 这里也可以用this.result代替e.target.result
+                    _this.fn(baseCode);
+                };
+
+                // fileReader读取数据
+                reader.readAsDataURL(data);
+            } else {
+                _this.fn(data);
+            }
+
+        },
+        event : function(flag) {
+            var input = this.input;
+            var _this = this;
+
+            input.addEventListener("paste", function(event){
+                var clipboard = event.clipboardData;
+                var fileData,// 图片base64数据容器
+                    property,// 浏览器获取图片数据后载体的
+                    kind,// 获取到的文件类型
+                    typeFlag,// 文件是否符合要求的标志位
+                    type;// 
+
+                // 如果存在获取截屏功能
+                if (clipboard) {
+
+                    // 如果有数据
+                    if (clipboard.items) {
+                        property = clipboard.items[0];
+
+                        // 剪贴板总文件类型列表 - Files
+                        // type = clipboard.types[0];
+
+                        // 如果存在数据
+                        if (property) {
+                            kind = property.kind;// file
+                            type = property.type;// "image/png"
+                            typeFlag = (type.search("image") !== -1);
+                            if (kind === "file" && typeFlag) {
+                                fileData = property.getAsFile();
+                                _this._fileProcess(fileData, flag);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    };
+
+window.PasteImg = PasteImg;
+})();
+
+new PasteImg(true, "#img_input", function(baseCode){
+    // 返回的为base64编码。
+    // 可以直接通过ajax直接传输
+    var img = new Image();
+    
+    img.src = baseCode;
+    document.body.appendChild(img);
+});
+
+// new PasteImg(false, "#img_input", function(file){
+
+//     var formdata = new FormDate();
+
+//     // myFile为二进制文件源文件，不经base64编码。
+//     formData.append("fileName", file);
+
+//     // 通过ajax发送
+//     $.ajax({
+//         url: "abc.php",
+//         type: "post",
+//         data: formData,
+//         contentType: false,// 不设置请求头(必需)
+//         processData: false,// 不格式化数据(必需)
+//         success: function() {
+//             // some code
+//         }
+//     });
+// });
+</script>
+</html>
